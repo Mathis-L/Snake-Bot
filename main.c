@@ -26,18 +26,24 @@ int main() {
 
             fruit(&jeu);
             
-            //jeu.direction = performAStarSearch(jeu);
+             
             enum Direction player_dir;
 
             if (choice == HUMAN){
                 player_dir = input(jeu);
             }
             else{
+                //player_dir = performAStarSearch(jeu);
                 player_dir = giveDirection(jeu);
             }
 
             if (player_dir == NORTH || player_dir == SOUTH || player_dir == EAST || player_dir == WEST){ //test if the direction given by the player is valid
                 jeu.direction = player_dir;
+            }
+            else{
+                printf("\ninvalid input\n");
+                sleep(3);
+                exit(0);
             }
 
             logic(&jeu);
@@ -171,22 +177,23 @@ void logic(Snake *jeu){
     switch(jeu->direction) {
         case NORTH:
             headCoordinate.x--;
-            printf("NORTH\n");
+            //printf("NORTH\n");
             break;
         case EAST:
             headCoordinate.y++;
-            printf("EAST\n");
+            //printf("EAST\n");
             break;
         case SOUTH:
             headCoordinate.x++;
-            printf("SOUTH\n");
+            //printf("SOUTH\n");
             break;
         case WEST:
             headCoordinate.y--;
-            printf("WEST\n");
+            //printf("WEST\n");
             break;
         default:
-            printf("prout\n");
+            headCoordinate.x--;
+            //printf("prout\n");
     }
 
     if (jeu->board[headCoordinate.x][headCoordinate.y] == '#' || jeu->board[headCoordinate.x][headCoordinate.y] == '0'){
@@ -226,15 +233,6 @@ void appendNode(Node** headRef, coordinate coordinate) {
         current->next = newNode;
     }
 }
-
-// void displayList(Node* head) {
-//     Node* current = head;
-//     while (current != NULL) {
-//         printf("(%d, %d) -> ", current->coordinate.x, current->coordinate.y);
-//         current = current->next;
-//     }
-//     printf("NULL\n");
-// }
 
 void shiftValues(Node** headRef, coordinate newCoordinate) {
     if (*headRef == NULL)
