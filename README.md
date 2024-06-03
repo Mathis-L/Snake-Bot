@@ -46,3 +46,20 @@ Exploring Neighbor Nodes: Once a node is selected, the algorithm examines neighb
 Repetition: The algorithm repeats these steps until the target node is reached or until the list of nodes to explore is empty, indicating that there is no path between the starting node and the target node.
 
 In the context of snakeBot implementation, A* calculates the optimal path for the snake to reach its next target, i.e. food.
+
+## SnakeBotv2 
+In summary, snakeBotv2 incorporates the A* algorithm as a baseline for pathfinding and adds significant enhancements to evaluate space and avoid self-trapping. This makes the AI more robust and capable of handling complex scenarios in the game.
+1. **Enhancements**:
+- The `giveDirection` function first calls `performAStarSearch` to find the shortest path to the fruit. The resulting direction is stored in `AstarResult`.
+- The A* result is used as a baseline but is not always followed strictly. Instead, the AI evaluates potential moves based on available space and the risk of self-blockage. 
+2. **areaSize** : 
+- After determining the direction from A*, the AI evaluates the available space in each potential move direction (north, south, east, west) using the `areaSize` function.
+- This function performs a flood fill (breadth-first search) to calculate the area size starting from a given coordinate, ensuring the snake does not trap itself in a small enclosed space. 
+3. **Choosing the Best Direction** : 
+- The AI calculates the area size for each potential direction and stores these values in `values_directions`.
+- It gives a slight preference to the direction suggested by A* by incrementing its area size value.
+- The direction with the maximum area size is then chosen, but additional checks are in place to avoid moving too close to walls, which might lead to future traps. 
+4. **Avoiding One-Space Gaps Near Walls** :
+- The AI includes logic to prevent it from moving into positions where it might be trapped with only one space to move (i.e., a space adjacent to the wall with no escape).
+- If moving in a direction (north, south, east, west) results in a position next to the wall and there is no fruit in the corresponding row or column, the AI penalizes this direction by decrementing its area size value.
+- It then recalculates the best move to avoid these risky positions.
