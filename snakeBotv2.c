@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "snakeBot.h"
-#include "calculAire.h"
 
 
 int isCoordinateInArray(coordinate data[], int size, coordinate target) {

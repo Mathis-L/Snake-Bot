@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "snakeBot.h"
-#include "calculAire.h"
 
 int manhattanDistance(coordinate c1, coordinate c2) {
     return abs(c1.x - c2.x) + abs(c1.y - c2.y);
@@ -134,7 +133,7 @@ enum Direction performAStarSearch(Snake jeu) {
             else{
                 //printf("VOISIIN A VISE (%d, %d)\n", path[i-2].x, path[i-2].y);
                 //printf("PLAYER: (%d, %d)\n", startNode->coord.x, startNode->coord.y);
-                return -1; // Indication d'une direction invalide
+                return NORTH; // Indication d'une direction invalide donne la direction par défaut
             }
                 
 
