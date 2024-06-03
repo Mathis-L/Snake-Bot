@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include "snakeBot.h"
-#include "calculAire.h"
 
 int manhattanDistance(coordinate c1, coordinate c2) {
     return abs(c1.x - c2.x) + abs(c1.y - c2.y);
@@ -18,6 +17,7 @@ int sameCoordinate(coordinate c1, coordinate c2){
 
 // Fonction pour effectuer une recherche A* et retourner la prochaine direction à suivre
 enum Direction performAStarSearch(Snake jeu) {
+    printf("\nVERSION AI: A*\n");
     static int mallocCount = 0;
     static int freeCount = 0;
     // Déclarer un tableau pour stocker les nœuds à explorer
@@ -36,7 +36,7 @@ enum Direction performAStarSearch(Snake jeu) {
     }
     mallocCount++;
     startNode->coord = jeu.nodePlayer->coordinate;
-    printf("PLAYER: (%d, %d)\n", startNode->coord.x, startNode->coord.y);
+    //printf("PLAYER: (%d, %d)\n", startNode->coord.x, startNode->coord.y);
     startNode->f = 0;
     startNode->g = 0;
     startNode->h = 0;
@@ -47,7 +47,7 @@ enum Direction performAStarSearch(Snake jeu) {
 
     // Déclarer les coordonnées de la nourriture
     coordinate foodCoord = jeu.fruit;
-    printf("FOOD: (%d, %d)\n", foodCoord.x, foodCoord.y);
+    //printf("FOOD: (%d, %d)\n", foodCoord.x, foodCoord.y);
     
     // printf("Starting A* search...\n");
     while (openListCount > 0 && closedListCount< HEIGHT * WIDTH) {
@@ -107,25 +107,25 @@ enum Direction performAStarSearch(Snake jeu) {
 
             if (path[i-2].x > startNode->coord.x && path[i-2].y == startNode->coord.y){
                 if (jeu.direction != NORTH){
-                    printf("SOUTH\n");
+                    //printf("SOUTH\n");
                     return SOUTH;
                 }
             }
             else if (path[i-2].x < startNode->coord.x && path[i-2].y == startNode->coord.y){
                 if (jeu.direction != SOUTH){
-                    printf("NORTH\n");
+                    //printf("NORTH\n");
                     return NORTH;
                 }
             }                
             else if (path[i-2].y > startNode->coord.y && path[i-2].x == startNode->coord.x){
                 if (jeu.direction != WEST){
-                    printf("EAST\n");
+                    //printf("EAST\n");
                     return EAST;
                 }
             }
             else if (path[i-2].y < startNode->coord.y && path[i-2].x == startNode->coord.x){
                 if (jeu.direction != EAST){
-                    printf("WEST\n");
+                    //printf("WEST\n");
                     return WEST;
                 }
                 
@@ -133,7 +133,7 @@ enum Direction performAStarSearch(Snake jeu) {
             else{
                 //printf("VOISIIN A VISE (%d, %d)\n", path[i-2].x, path[i-2].y);
                 //printf("PLAYER: (%d, %d)\n", startNode->coord.x, startNode->coord.y);
-                return -1; // Indication d'une direction invalide
+                return NORTH; // Indication d'une direction invalide donne la direction par défaut
             }
                 
 
@@ -228,7 +228,7 @@ enum Direction performAStarSearch(Snake jeu) {
 
     //printf("tant d'allocation: %d, tant de free %d \n", mallocCount, freeCount);
 
-    printf("PAS DE CHEMIN TROUVE");
+    //printf("PAS DE CHEMIN TROUVE");
     // Si aucun chemin n'a été trouvé, retourner une direction aléatoire
 for (int i = 0; i<4; i++){
     enum Direction dir = i;

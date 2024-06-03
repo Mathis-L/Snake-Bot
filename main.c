@@ -1,16 +1,22 @@
 #include <stdio.h>
-#include <conio.h> // Incluez le fichier d'en-tête conio.h pour utiliser kbhit() keyboard input
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h> // for sleep function
 #include "main.h"
+#include "humanInput.h"
 #include "snakeBot.h"
-#include "calculAire.h"
 
 int main() {
     int replay;
+    printf("Bienvenue dans le jeu Snake !\n");
+
     do{
         Snake jeu;
         initBoard(&jeu);
+
+        enum PlayerType choice;
+        userChoice(&choice);
+        sleep(2); //wait one seconds
 
         while (!jeu.dead){
             int i = 0;
@@ -19,14 +25,25 @@ int main() {
             }
 
             fruit(&jeu);
-            //input(&jeu);
             
-            //jeu.direction = performAStarSearch(jeu);
+             
             enum Direction player_dir;
-            player_dir = giveDirection(jeu);
+
+            if (choice == HUMAN){
+                player_dir = input(jeu);
+            }
+            else{
+                //player_dir = performAStarSearch(jeu);
+                player_dir = giveDirection(jeu);
+            }
 
             if (player_dir == NORTH || player_dir == SOUTH || player_dir == EAST || player_dir == WEST){ //test if the direction given by the player is valid
                 jeu.direction = player_dir;
+            }
+            else{
+                printf("\ninvalid input\n");
+                sleep(3);
+                exit(0);
             }
 
             logic(&jeu);
@@ -41,13 +58,27 @@ int main() {
     return 0;
 }
 
-int increaseSpeed(int speed){
-    //static int progress = 0;
+void userChoice(enum PlayerType *playerType){
+    int choice;
+    printf("Choisissez une option :\n");
+    printf("1. Joueur Humain\n");
+    printf("2. Intelligence Artificielle\n");
+    scanf("%d", &choice);
 
-    if (speed > MAX_SPEED){
-        speed = speed-(100000);
+    switch (choice) {
+        case 1:
+            printf("Vous avez choisi de jouer en tant que Joueur Humain.\n");
+            *playerType = HUMAN;
+            break;
+        case 2:
+            printf("Vous avez choisi de regarder l'Intelligence Artificielle.\n");
+            *playerType = AI;
+            break;
+        default:
+            printf("You are too dumb to play by yourself \n");
+            *playerType = AI;
+            break;
     }
-    return speed;
 }
 
 void initBoard(Snake *jeu){
@@ -115,7 +146,7 @@ void draw(Snake *jeu){
         printf("\n");
     }
     printf("SCORE : %d\n", jeu->points);
-    printf("Quitter le jeu : APPUYER SUR 'X'");
+    printf("Quitter le jeu : APPUYER SUR 'X'\n");
 }
 
 int validPosFruit(Snake jeu, int x, int y){
@@ -141,58 +172,29 @@ void fruit(Snake *jeu){
 }
 
 
-void input(Snake *jeu){
-    char ch;
-    if (kbhit()) {
-        ch = getch(); // Utilisez getch() pour obtenir la touche enfoncée
-        //printf("La touche '%c' a été enfoncée.\n", ch);
-
-        if(ch == 'q'){
-            if (jeu->direction != EAST)
-                jeu->direction=WEST;
-        }
-        else if (ch == 's'){
-            if (jeu->direction != NORTH)
-                jeu->direction=SOUTH;
-        }
-        else if (ch == 'd'){
-            if (jeu->direction != WEST)
-                jeu->direction=EAST;
-        }
-        else if (ch == 'z'){
-            if (jeu->direction != SOUTH)
-                jeu->direction=NORTH;
-        }
-        else if (ch == 'x'){
-            exit(0);
-        }
-    } 
-}
-
-
 void logic(Snake *jeu){
     coordinate headCoordinate = jeu->nodePlayer->coordinate;
     switch(jeu->direction) {
         case NORTH:
             headCoordinate.x--;
-            printf("NORTH\n");
+            //printf("NORTH\n");
             break;
         case EAST:
             headCoordinate.y++;
-            printf("EAST\n");
+            //printf("EAST\n");
             break;
         case SOUTH:
             headCoordinate.x++;
-            printf("SOUTH\n");
+            //printf("SOUTH\n");
             break;
         case WEST:
             headCoordinate.y--;
-            printf("WEST\n");
+            //printf("WEST\n");
             break;
         default:
-            printf("prout\n");
+            headCoordinate.x--;
+            //printf("prout\n");
     }
-    //printf("L'aire devant le serpent: %d", areaSize(headCoordinate, jeu->board));
 
     if (jeu->board[headCoordinate.x][headCoordinate.y] == '#' || jeu->board[headCoordinate.x][headCoordinate.y] == '0'){
         jeu->dead = 1;
@@ -202,7 +204,6 @@ void logic(Snake *jeu){
         jeu->fruitExist = 0;
         coordinate tailCoordinate = {-1, -1};
         appendNode(&jeu->nodePlayer, tailCoordinate);
-        jeu->speed = increaseSpeed(jeu->speed);
     } //player eats the fruit
 
     shiftValues(&jeu->nodePlayer, headCoordinate);
@@ -232,15 +233,6 @@ void appendNode(Node** headRef, coordinate coordinate) {
         current->next = newNode;
     }
 }
-
-// void displayList(Node* head) {
-//     Node* current = head;
-//     while (current != NULL) {
-//         printf("(%d, %d) -> ", current->coordinate.x, current->coordinate.y);
-//         current = current->next;
-//     }
-//     printf("NULL\n");
-// }
 
 void shiftValues(Node** headRef, coordinate newCoordinate) {
     if (*headRef == NULL)
