@@ -10,6 +10,12 @@
 #define MIN_SPEED 5 //50000000 //100000000
 #define MAX_SPEED 10000000 
 #define ACCELERATION_SPEED 400000
+
+enum PlayerType {
+    HUMAN,
+    AI
+};
+
 enum Direction{
     NORTH,
     SOUTH,
@@ -39,12 +45,12 @@ typedef struct Snake{
 } Snake;
 
 
-
+void userChoice(enum PlayerType *playerType);
 void initBoard(Snake *jeu);
 void draw(Snake *jeu);
 void fruit(Snake *jeu);
 int validPosFruit(Snake jeu, int x, int y);
-void input(Snake *jeu);
+enum Direction input(Snake jeu);
 void logic(Snake *jeu);
 int deadScreen(Snake *jeu);
 int increaseSpeed(int speed);

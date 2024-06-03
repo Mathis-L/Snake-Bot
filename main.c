@@ -1,16 +1,22 @@
 #include <stdio.h>
-#include <conio.h> // Incluez le fichier d'en-tête conio.h pour utiliser kbhit() keyboard input
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h> // for sleep function
 #include "main.h"
+#include "humanInput.h"
 #include "snakeBot.h"
-#include "calculAire.h"
 
 int main() {
     int replay;
+    printf("Bienvenue dans le jeu Snake !\n");
+
     do{
         Snake jeu;
         initBoard(&jeu);
+
+        enum PlayerType choice;
+        userChoice(&choice);
+        sleep(2); //wait one seconds
 
         while (!jeu.dead){
             int i = 0;
@@ -19,11 +25,16 @@ int main() {
             }
 
             fruit(&jeu);
-            //input(&jeu);
             
             //jeu.direction = performAStarSearch(jeu);
             enum Direction player_dir;
-            player_dir = giveDirection(jeu);
+
+            if (choice == HUMAN){
+                player_dir = input(jeu);
+            }
+            else{
+                player_dir = giveDirection(jeu);
+            }
 
             if (player_dir == NORTH || player_dir == SOUTH || player_dir == EAST || player_dir == WEST){ //test if the direction given by the player is valid
                 jeu.direction = player_dir;
@@ -39,6 +50,29 @@ int main() {
     }while(replay);
     
     return 0;
+}
+
+void userChoice(enum PlayerType *playerType){
+    int choice;
+    printf("Choisissez une option :\n");
+    printf("1. Joueur Humain\n");
+    printf("2. Intelligence Artificielle\n");
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("Vous avez choisi de jouer en tant que Joueur Humain.\n");
+            *playerType = HUMAN;
+            break;
+        case 2:
+            printf("Vous avez choisi de regarder l'Intelligence Artificielle.\n");
+            *playerType = AI;
+            break;
+        default:
+            printf("You are too dumb to play by yourself \n");
+            *playerType = AI;
+            break;
+    }
 }
 
 void initBoard(Snake *jeu){
@@ -106,7 +140,7 @@ void draw(Snake *jeu){
         printf("\n");
     }
     printf("SCORE : %d\n", jeu->points);
-    printf("Quitter le jeu : APPUYER SUR 'X'");
+    printf("Quitter le jeu : APPUYER SUR 'X'\n");
 }
 
 int validPosFruit(Snake jeu, int x, int y){
@@ -132,35 +166,6 @@ void fruit(Snake *jeu){
 }
 
 
-void input(Snake *jeu){
-    char ch;
-    if (kbhit()) {
-        ch = getch(); // Utilisez getch() pour obtenir la touche enfoncée
-        //printf("La touche '%c' a été enfoncée.\n", ch);
-
-        if(ch == 'q'){
-            if (jeu->direction != EAST)
-                jeu->direction=WEST;
-        }
-        else if (ch == 's'){
-            if (jeu->direction != NORTH)
-                jeu->direction=SOUTH;
-        }
-        else if (ch == 'd'){
-            if (jeu->direction != WEST)
-                jeu->direction=EAST;
-        }
-        else if (ch == 'z'){
-            if (jeu->direction != SOUTH)
-                jeu->direction=NORTH;
-        }
-        else if (ch == 'x'){
-            exit(0);
-        }
-    } 
-}
-
-
 void logic(Snake *jeu){
     coordinate headCoordinate = jeu->nodePlayer->coordinate;
     switch(jeu->direction) {
@@ -183,7 +188,6 @@ void logic(Snake *jeu){
         default:
             printf("prout\n");
     }
-    //printf("L'aire devant le serpent: %d", areaSize(headCoordinate, jeu->board));
 
     if (jeu->board[headCoordinate.x][headCoordinate.y] == '#' || jeu->board[headCoordinate.x][headCoordinate.y] == '0'){
         jeu->dead = 1;
