@@ -33,8 +33,8 @@ int main() {
                 player_dir = input(jeu);
             }
             else{
-                player_dir = performAStarSearch(jeu);
-                //player_dir = giveDirection(jeu);
+                //player_dir = performAStarSearch(jeu);
+                player_dir = giveDirection(jeu);
             }
 
             if (player_dir == NORTH || player_dir == SOUTH || player_dir == EAST || player_dir == WEST){ //test if the direction given by the player is valid
