@@ -41,15 +41,6 @@ int main() {
     return 0;
 }
 
-int increaseSpeed(int speed){
-    //static int progress = 0;
-
-    if (speed > MAX_SPEED){
-        speed = speed-(100000);
-    }
-    return speed;
-}
-
 void initBoard(Snake *jeu){
     for (int i = 0; i < HEIGHT; i++) {
         for (int j = 0; j < WIDTH; j++) {
@@ -202,7 +193,6 @@ void logic(Snake *jeu){
         jeu->fruitExist = 0;
         coordinate tailCoordinate = {-1, -1};
         appendNode(&jeu->nodePlayer, tailCoordinate);
-        jeu->speed = increaseSpeed(jeu->speed);
     } //player eats the fruit
 
     shiftValues(&jeu->nodePlayer, headCoordinate);
