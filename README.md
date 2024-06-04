@@ -50,29 +50,24 @@ In the context of snakeBot implementation, A* calculates the optimal path for th
 ## SnakeBotv2 
 In summary, snakeBotv2 incorporates the A* algorithm as a baseline for pathfinding and adds significant enhancements to evaluate space and avoid self-trapping. This makes the AI more robust and capable of handling complex scenarios in the game.
 1. **Enhancements**:
-- The `giveDirection` function first calls `performAStarSearch` to find the shortest path to the fruit. The resulting direction is stored in `AstarResult`.
-- The A* result is used as a baseline but is not always followed strictly. Instead, the AI evaluates potential moves based on available space and the risk of self-blockage. 
-2. **areaSize** : 
+The `giveDirection` function first calls `performAStarSearch` to find the shortest path to the fruit. The resulting direction is stored in `AstarResult`. This result is used as a baseline but is not always followed strictly. Instead, the AI evaluates potential moves based on available space and the risk of self-blockage. 
+4. **areaSize** : 
 - After determining the direction from A*, the AI evaluates the available space in each potential move direction (north, south, east, west) using the `areaSize` function.
 - This function performs a flood fill (breadth-first search) to calculate the area size starting from a given coordinate, ensuring the snake does not trap itself in a small enclosed space. 
 3. **Choosing the Best Direction** : 
-- The AI calculates the area size for each potential direction and stores these values in `values_directions`.
 - It gives a slight preference to the direction suggested by A* by incrementing its area size value.
-- The direction with the maximum area size is then chosen, but additional checks are in place to avoid moving too close to walls, which might lead to future traps. 
+- The direction with the maximum area size is then chosen.
 4. **Avoiding One-Space Gaps Near Walls** :
-- The AI includes logic to prevent it from moving into positions where it might be trapped with only one space to move (i.e., a space adjacent to the wall with no escape).
-- If moving in a direction (north, south, east, west) results in a position next to the wall and there is no fruit in the corresponding row or column, the AI penalizes this direction by decrementing its area size value.
-- It then recalculates the best move to avoid these risky positions.
+If moving in a direction (north, south, east, west) results in a position next to the wall (i.e., a space adjacent to the wall with no escape) and there is no fruit in the corresponding row or column, the AI penalizes this direction by decrementing its area size value.
 
 ## Results
 I tested the two versions of the AI algorithm on a 20x20 grid (18x18 for usable cells). The following results show the number of fruits consumed by the SnakeBot for each version over 10 different games. the goal was to code a bot that can obtain 100 points on the 18*18 = 324 available (if we substract the snake head it's 323 points maximum).
 ### SnakeBot with A*:
-Number of fruits consumed: [52, 63, 66, 50, 45, 59, 52, 37, 63, 75]
+Number of fruits consumed: [52, 63, 66, 50, 45, 59, 52, 37, 63, 75]   
 Average fruits consumed: 56.2 
 ### SnakeBotv2:
-Number of fruits consumed: [82, 86, 76, 87, 105, 110, 127, 92, 92, 116]
-Average fruits consumed: 97.3 
+Number of fruits consumed: [82, 86, 76, 87, 105, 110, 127, 92, 92, 116]  
+Average fruits consumed: 97.3   
 The best result of SnakeBotv2 is 127 fruits consumed, which corresponds to filling 127 / 324 ≈ 39.3% of the usable grid (18x18).
 ### Results Analysis 
-
 These results show that SnakeBotv2, with its enhancements to avoid traps and evaluate available space, is significantly more efficient than the basic A* algorithm in terms of the number of fruits consumed. SnakeBotv2 consumes more fruits on average, indicating a better ability to navigate and survive in the game environment.
